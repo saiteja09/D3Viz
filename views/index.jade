@@ -1,0 +1,18 @@
+extends layout
+block content
+    body
+        div.container-fluid
+            div.row
+                div.col-sm-12
+                    nav.navbar.navbar-fixed-top.navbar-default(style="margin-bottom:0px")
+                        div.navbar-header
+                            a.navbar-brand(style="font-size:26px;" href="#") DataDirect Cloud Viz
+
+            div.content
+                center
+                    form(method="post", id="loginForm", style="margin-top: 10%; width: 20%;" action="/")
+                        div.form-group
+                            input.form-control.input-sm(name="username" type="text" placeholder="Username")
+                        div.form-group
+                            input.form-control.input-sm(name="password" type="password" placeholder="Password")
+                        input.btn.btn-primary(type="submit", value="Log In")

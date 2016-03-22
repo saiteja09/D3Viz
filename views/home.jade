@@ -1,0 +1,37 @@
+//
+   Created by SaikrishnaTeja on 3/3/16.
+extends layout
+block content
+    script(src="/javascripts/_home.js")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js")
+
+    body(onload="loadDataSources()")
+        div.container-fluid
+            div.row
+                div.col-sm-12
+                    nav.navbar.navbar-fixed-top.navbar-default(style="margin-bottom:0px")
+                        div.navbar-header
+                            a.navbar-brand(style="font-size:26px;" href="#") DataDirect Cloud Viz
+                            a(style="text-align:right" onclick="logout()") Logout
+
+
+            div.content(style="margin-top: 10%")
+                input.user(type="hidden" value=new Buffer("#{user}").toString('base64'))
+                input.acces(type="hidden" value=new Buffer("#{pass}").toString('base64'))
+
+                table(style="width: 100%; border-collapse:separate; border-spacing:5em")
+                    tr
+                        td
+                            div.selecttitleDS(style="text-align: right")
+                                p Select your DataSource
+
+                        td
+                            div.DataSource
+                                select.drpdwnDataSource.form-control(style="width: 250px;text-align: center" onchange="loadTables()")
+                    tr
+                        td
+                            div.selecttitletable(style="text-align: right")
+                                p Select Table
+                        td
+                            div.tables
+                                select.drpdwntables.form-control(style="width: 250px;text-align: center")
