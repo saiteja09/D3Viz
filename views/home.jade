@@ -19,19 +19,16 @@ block content
                 input.user(type="hidden" value=new Buffer("#{user}").toString('base64'))
                 input.acces(type="hidden" value=new Buffer("#{pass}").toString('base64'))
 
-                table(style="width: 100%; border-collapse:separate; border-spacing:5em")
-                    tr
-                        td
-                            div.selecttitleDS(style="text-align: right")
-                                p Select your DataSource
+                form(method="post", id="selectdatasource", style="margin-top: 10%;" action="/home")
 
-                        td
-                            div.DataSource
-                                select.drpdwnDataSource.form-control(style="width: 250px;text-align: center" onchange="loadTables()")
-                    tr
-                        td
-                            div.selecttitletable(style="text-align: right")
-                                p Select Table
-                        td
-                            div.tables
-                                select.drpdwntables.form-control(style="width: 250px;text-align: center")
+                    center
+                        div.DataSource
+                            select.drpdwnDataSource.form-control(style="width: 250px;text-align: center" onchange="loadTables()" name="datasource")
+                                option(value="" disabled selected) Select your DataSource
+
+                        div.tables(style="margin-top:1%; opacity: 0" onchange="showSubmit()")
+                            select.drpdwntables.form-control(style="width: 250px;text-align: center" name="table")
+                                option(value="" disabled selected) Select Table
+
+                        div.submit(style="margin-top:1%; opacity: 0")
+                            input.btn.btn-primary(type="submit", value="Visualize")

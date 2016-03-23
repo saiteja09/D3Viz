@@ -7,8 +7,8 @@ var bodyParser = require('body-parser');
 var session = require('express-session')
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
 var home = require('./routes/home');
+var visualize = require('./routes/visualize');
 
 var app = express();
 

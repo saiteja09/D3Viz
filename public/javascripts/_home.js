@@ -30,7 +30,7 @@ function parseResponse(httpRequest){
                 var dataSource = json_object.dataSources[i];
                 $('.drpdwnDataSource')
                     .append($("<option></option>")
-                        .attr("value",dataSource.dataStore)
+                        .attr("value",dataSource.name)
                         .attr("id", dataSource.id)
                         .text(dataSource.name));
             }
@@ -42,9 +42,13 @@ function parseResponse(httpRequest){
 
 
 function loadTables(){
+
+    var datasource = $(".drpdwnDataSource option:selected").text();
+
+    $(".tables").fadeTo(1000, 0);
     var user = atob(document.getElementsByClassName('user')[0].value);
     var acces = atob(document.getElementsByClassName('acces')[0].value);
-    var datasource = $(".drpdwnDataSource option:selected").text();
+
     var URL = "https://service.datadirectcloud.com/api/odata/" + datasource;
     var httprequest = new XMLHttpRequest();
     httprequest.onreadystatechange = function () {
@@ -59,12 +63,8 @@ function parseTablesResponse(httpRequest) {
 
     if (httpRequest.readyState == 4) {
         if (httpRequest.status == 200) {
-            //alert("The response was: " + httpRequest.status + httpRequest.responseText);
-            $(".drpdwntables").css('visibility', 'visible');
-            $(".drpdwntables").animate({
-                opacity: 'toggle'
-            }, 1000);
 
+            $(".tables").fadeTo(1000, 1000);
             var xml = httpRequest.responseText,
                 xmlDoc = $.parseXML(xml),
                 $xml = $(xmlDoc),
@@ -74,8 +74,14 @@ function parseTablesResponse(httpRequest) {
                         text: $(this).text()
                     }));
                 });
-            $("#authResults").fadeIn('slow');
 
         }
     }
+}
+
+function showSubmit(){
+
+
+    $(".submit").fadeTo(1000, 1000);
+
 }

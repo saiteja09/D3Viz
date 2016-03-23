@@ -18,5 +18,11 @@ router.get('/', function(req, res, next) {
 });
 
 
+router.post('/', function(req, res, next){
+    var sess = req.session;
+    sess.datasource = req.body.datasource;
+    sess.table = req.body.table;
+
+});
 
 module.exports = router;
