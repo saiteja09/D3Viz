@@ -1,0 +1,19 @@
+extends layout
+block content
+    script(src="/javascripts/_visualize.js")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js")
+
+    body(onload="loadMetaData()")
+        div.container-fluid
+            div.row
+                div.col-sm-12
+                    nav.navbar.navbar-fixed-top.navbar-default(style="margin-bottom:0px")
+                        div.navbar-header
+                            a.navbar-brand(style="font-size:26px;" href="#") DataDirect Cloud Viz
+
+
+            div.content
+                input.user(type="hidden" value=new Buffer("#{user}").toString('base64'))
+                input.acces(type="hidden" value=new Buffer("#{pass}").toString('base64'))
+                input.datasource(type="hidden" value=new Buffer("#{datasource}").toString('base64'))
+                input.table(type="hidden" value=new Buffer("#{table}").toString('base64'))

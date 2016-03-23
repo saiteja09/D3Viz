@@ -22,7 +22,7 @@ router.post('/', function(req, res, next){
     var sess = req.session;
     sess.datasource = req.body.datasource;
     sess.table = req.body.table;
-
+    res.redirect('/visualize');
 });
 
 module.exports = router;
