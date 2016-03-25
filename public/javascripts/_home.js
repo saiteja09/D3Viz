@@ -49,7 +49,7 @@ function loadTables(){
     var user = atob(document.getElementsByClassName('user')[0].value);
     var acces = atob(document.getElementsByClassName('acces')[0].value);
 
-    var URL = "https://service.datadirectcloud.com/api/odata/" + datasource;
+    var URL = "https://service.datadirectcloud.com/api/odata/" + datasource + "/$metadata";
     var httprequest = new XMLHttpRequest();
     httprequest.onreadystatechange = function () {
         parseTablesResponse(httprequest)
@@ -68,10 +68,10 @@ function parseTablesResponse(httpRequest) {
             var xml = httpRequest.responseText,
                 xmlDoc = $.parseXML(xml),
                 $xml = $(xmlDoc),
-                $title = $xml.find("title").each(function (index, item) {
+                $title = $xml.find("EntityType").each(function (index, item) {
                     $(".drpdwntables").append($('<option>', {
-                        value: $(this).text(),
-                        text: $(this).text()
+                        value: this.attributes[0].nodeValue,
+                        text: this.attributes[0].nodeValue
                     }));
                 });
 

@@ -2,8 +2,13 @@ extends layout
 block content
     script(src="/javascripts/_visualize.js")
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js")
+    script(src="//d3js.org/d3.v3.min.js" charset="utf-8")
+    script(src="/sweetalert/sweetalert.min.js")
+    link(href="/sweetalert/sweetalert.css" rel="stylesheet" type="text/css" media="screen")
+    script(src="/javascripts/pluralize.js")
 
-    body(onload="loadMetaData()")
+
+    body(onload="loadMetaData()" style="height: 100%")
         div.container-fluid
             div.row
                 div.col-sm-12
@@ -12,8 +17,25 @@ block content
                             a.navbar-brand(style="font-size:26px;" href="#") DataDirect Cloud Viz
 
 
-            div.content
+            div.content(style="height: 100%")
                 input.user(type="hidden" value=new Buffer("#{user}").toString('base64'))
                 input.acces(type="hidden" value=new Buffer("#{pass}").toString('base64'))
                 input.datasource(type="hidden" value=new Buffer("#{datasource}").toString('base64'))
                 input.table(type="hidden" value=new Buffer("#{table}").toString('base64'))
+
+                div.leftbar(style="margin-top: 60px;float:left; height: 100%; border-right: thick solid #000000; padding-right:25px;")
+                    div.measures
+                        h4 Measures
+                        select.drpdwnmeasures.form-control(style="width: 300px;text-align: center; height: 300px; margin-top:5%" name="measures" size="10")
+
+                    div.dimensions(style="margin-top:20%;")
+                        h4 Dimensions
+                        select.drpdwndimensions.form-control(style="width: 300px;text-align: center; height:300px; margin-top:5%" name="dimensions" size = "10")
+
+
+                    div.submit(style="margin-top:10%;")
+                        h4 Chart Type
+                        input.btn.btn-primary(type="submit", value="Bar Chart" onclick="getData()")
+
+
+                div.rightbar(style="margin-top:60px; float:right")
