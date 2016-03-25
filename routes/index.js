@@ -22,6 +22,12 @@ router.post('/', function(req, res, next){
         sess.acces = req.body.password;
         res.redirect('/home');
     }
+    else
+    {
+        var sess = req.session;
+        sess.error_msg = "Invalid Credentials"
+        res.render('index',{title: 'Express', error_msg: sess.error_msg} )
+    }
   });
 });
 
