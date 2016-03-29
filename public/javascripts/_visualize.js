@@ -69,14 +69,19 @@ function parseMetaData(httpRequest, table){
 
 function getData()
 {
-    var measure = $(".drpdwnmeasures option:selected").text();
-    var dimension = $(".drpdwndimensions option:selected").text();
+    var measure = $(".drpdwnmeasures option:selected")[0];
+    var dimension = $(".drpdwndimensions option:selected")[0];
 
-    if(measure == "" || dimension == "")
+
+    if(measure == undefined || dimension == undefined)
     {
         sweetAlert("Oops...", "You have to select one measure and one dimension to create a bar chart!", "error");
         return
     }
+
+    measure = measure.value;
+    dimension = dimension.value;
+
     var user = atob(document.getElementsByClassName('user')[0].value);
     var acces = atob(document.getElementsByClassName('acces')[0].value);
     var datasource = atob(document.getElementsByClassName('datasource')[0].value);
@@ -97,14 +102,144 @@ function getData()
 
 function parseData(httpRequest, measure, dimension)
 {
+    var dataHash = new Object();
     if (httpRequest.readyState == 4) {
         if (httpRequest.status == 200) {
-
             var json = httpRequest.responseText;
             var json_object = jQuery.parseJSON(json);
-            var i  =0;
+            var array_results = json_object.d.results;
+            for(var i = 0; i < array_results.length; i++)
+            {
+                var column_name = array_results[i][dimension];
+                var column_data = array_results[i][measure];
 
+                if(!(column_name in dataHash)) {
+                    dataHash[column_name] = column_data;
+                }
+                else {
+                    var measure_temp = dataHash[column_name];
+                    dataHash[column_name] = measure_temp + column_data;
+                }
+            }
+
+            drawBarGraph(dataHash);
         }
     }
 }
+
+function drawBarGraph(dataHash){
+
+    var height = 400,
+         width = 720,
+       barWidth = 40,
+      barOffset = 20;
+
+    var margin = {top: 30, right: 10, bottom: 30, left: 60}
+
+    var chartdata = new Array();
+    Object.keys(dataHash).forEach(function (key) {
+        //if(dataHash[key] != null)
+            chartdata.push(dataHash[key]);
+        // iteration code
+    });
+
+    chartdata =chartdata.sort(CompareForSort);
+
+    var yScale = d3.scale.linear()
+        .domain([0, d3.max(chartdata)])
+        .range([0, height])
+
+    var xScale = d3.scale.ordinal()
+        .domain(d3.range(0, chartdata.length))
+        .rangeBands([0, width])
+
+    var colors = d3.scale.linear()
+        .domain([0, chartdata.length*.33, chartdata.length*.66, chartdata.length])
+        .range(['#d6e9c6', '#bce8f1', '#faebcc', '#ebccd1'])
+
+    var awesome = d3.select('.rightbar').append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .style('background', '#bce8f1')
+        .selectAll('rect').data(chartdata)
+        .enter().append('rect')
+        .style({
+            'fill': function (data, i) {
+                return colors(i);
+            }, 'stroke': '#31708f', 'stroke-width': '5'
+        })
+        .attr('width', xScale.rangeBand())
+        .attr('x', function (data, i) {
+            return xScale(i);
+        })
+        .attr('height', 0)
+        .attr('y', height)
+        .on('mouseover', function (data) {
+            dynamicColor = this.style.fill;
+            d3.select(this)
+                .style('fill', '#3c763d')
+        })
+
+        .on('mouseout', function (data) {
+            d3.select(this)
+                .style('fill', dynamicColor)
+        })
+
+    awesome.transition()
+        .attr('height', function (data) {
+            return yScale(data);
+        })
+        .attr('y', function (data) {
+            return height - yScale(data);
+        })
+        .delay(function (data, i) {
+            return i * 20;
+        })
+        .duration(2000)
+        .ease('elastic');
+
+    var verticalGuideScale = d3.scale.linear()
+        .domain([0, d3.max(chartdata)])
+        .range([height, 0])
+
+    var vAxis = d3.svg.axis()
+        .scale(verticalGuideScale)
+        .orient('left')
+        .ticks(10)
+
+    var verticalGuide = d3.select('svg').append('g')
+    vAxis(verticalGuide)
+    verticalGuide.attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')')
+    verticalGuide.selectAll('path')
+        .style({fill: 'none', stroke: "#3c763d"})
+    verticalGuide.selectAll('line')
+        .style({stroke: "#3c763d"})
+
+    var hAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient('bottom')
+        .ticks(chartdata.size)
+
+    var horizontalGuide = d3.select('svg').append('g')
+    hAxis(horizontalGuide)
+    horizontalGuide.attr('transform', 'translate(' + margin.left + ', ' + (height + margin.top) + ')')
+    horizontalGuide.selectAll('path')
+        .style({fill: 'none', stroke: "#3c763d"})
+    horizontalGuide.selectAll('line')
+        .style({stroke: "#3c763d"});
+
+    $('svg')[0].attributes[1].value = 500;
+
+}
+
+function CompareForSort(first, second)
+{
+    if (first == second)
+        return 0;
+    if (first < second)
+        return -1;
+    else
+        return 1;
+}
+
 
