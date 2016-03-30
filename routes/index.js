@@ -7,7 +7,15 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-    res.render('index', { title: 'Express' });
+    var sess = req.session;
+    if(!('user' in sess && 'acces' in sess) || (sess.user == undefined || sess.acces == undefined))
+    {
+        res.render('index', { title: 'Express' });
+    }
+    else {
+        res.redirect('/home');
+    }
+
 
 });
 
