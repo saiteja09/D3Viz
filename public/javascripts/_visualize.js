@@ -88,7 +88,7 @@ function getData()
     var table = atob(document.getElementsByClassName('table')[0].value);
     table = pluralize(table);
 
-    var URL = "https://service.datadirectcloud.com/api/odata/" + datasource + "/" + table + "?$format=json";
+    var URL = "https://service.datadirectcloud.com/api/odata/" + datasource + "/" + table + "?$format=json&$orderby=" + measure;
     var httpRequest = new XMLHttpRequest();
     httpRequest.onreadystatechange = function () {
         parseData(httpRequest, measure, dimension)
@@ -137,9 +137,17 @@ function drawBarGraph(dataHash){
     var margin = {top: 30, right: 10, bottom: 30, left: 60}
 
     var chartdata = new Array();
+    var key_data = new Array();
     Object.keys(dataHash).forEach(function (key) {
         //if(dataHash[key] != null)
-            chartdata.push(dataHash[key]);
+            if(dataHash[key] == null)
+            {
+                chartdata.push(0);
+            }
+            else {
+                chartdata.push(dataHash[key]);
+            }
+            key_data.push(key);
         // iteration code
     });
 
@@ -152,6 +160,10 @@ function drawBarGraph(dataHash){
     var xScale = d3.scale.ordinal()
         .domain(d3.range(0, chartdata.length))
         .rangeBands([0, width])
+
+    var x = d3.scale.ordinal()
+        .domain(key_data)
+        .rangePoints([0, width]);
 
     var colors = d3.scale.linear()
         .domain([0, chartdata.length*.33, chartdata.length*.66, chartdata.length])
@@ -205,30 +217,39 @@ function drawBarGraph(dataHash){
     var vAxis = d3.svg.axis()
         .scale(verticalGuideScale)
         .orient('left')
-        .ticks(10)
+        .ticks(chartdata.size)
 
     var verticalGuide = d3.select('svg').append('g')
     vAxis(verticalGuide)
-    verticalGuide.attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')')
+    verticalGuide.attr('transform', 'translate(' + margin.left + ', 0)')
     verticalGuide.selectAll('path')
         .style({fill: 'none', stroke: "#3c763d"})
     verticalGuide.selectAll('line')
         .style({stroke: "#3c763d"})
 
+
+
     var hAxis = d3.svg.axis()
-        .scale(xScale)
+        .scale(x)
         .orient('bottom')
-        .ticks(chartdata.size)
+        .ticks(key_data.size)
 
     var horizontalGuide = d3.select('svg').append('g')
     hAxis(horizontalGuide)
-    horizontalGuide.attr('transform', 'translate(' + margin.left + ', ' + (height + margin.top) + ')')
+    horizontalGuide.attr('transform', 'translate(' + margin.left + ', ' + (height) + ')')
     horizontalGuide.selectAll('path')
         .style({fill: 'none', stroke: "#3c763d"})
     horizontalGuide.selectAll('line')
         .style({stroke: "#3c763d"});
+    horizontalGuide.selectAll("text")
+        .style("text-anchor","end").attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("y", "30")
+        .attr("transform", function (d) {
+            return "rotate(-90)";
+        });
 
-    $('svg')[0].attributes[1].value = 500;
+    $('svg')[0].attributes[1].value = 700;
 
 }
 
