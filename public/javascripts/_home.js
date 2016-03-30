@@ -45,7 +45,7 @@ function loadTables(){
 
     var datasource = $(".drpdwnDataSource option:selected").text();
 
-    $(".tables").fadeTo(1000, 0);
+    //$(".tables").fadeTo(1000, 0);
     var user = atob(document.getElementsByClassName('user')[0].value);
     var acces = atob(document.getElementsByClassName('acces')[0].value);
 
@@ -64,7 +64,7 @@ function parseTablesResponse(httpRequest) {
     if (httpRequest.readyState == 4) {
         if (httpRequest.status == 200) {
 
-            $(".tables").fadeTo(1000, 1000);
+            //$(".tables").fadeTo(1000, 1000);
             var xml = httpRequest.responseText,
                 xmlDoc = $.parseXML(xml),
                 $xml = $(xmlDoc),
@@ -82,6 +82,6 @@ function parseTablesResponse(httpRequest) {
 function showSubmit(){
 
 
-    $(".submit").fadeTo(1000, 1000);
+    //$(".submit").fadeTo(1000, 1000);
 
 }
